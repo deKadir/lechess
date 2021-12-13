@@ -1,0 +1,14 @@
+.board {
+  width: 528px;
+  height: 528px;
+  background-image: url("../../assets/images/wood.jpg");
+  background-size: cover;
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: column-reverse;
+  span {
+    display: block;
+    width: 66px;
+    height: 66px;
+  }
+}
