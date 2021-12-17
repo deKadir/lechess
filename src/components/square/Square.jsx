@@ -2,7 +2,9 @@ import style from "./square.module.scss";
 import { useDrop } from "react-dnd";
 import { useSelector, useDispatch } from "react-redux";
 import { movePiece } from "./../../store/actions/boardActions";
-import { PawnLogic } from "./../../scripts/pieceLogic";
+import calculateMove, { PawnLogic } from "./../../scripts/pieceLogic";
+import { getPieceFromPosition } from "../../helpers/helpers";
+import { getIndexOfPiece } from "./../../helpers/helpers";
 
 export default function Square({ children, position }) {
   const { pieces } = useSelector((state) => state);
@@ -23,18 +25,14 @@ export default function Square({ children, position }) {
     //get position of dragged element
     var positionIndex = element.position.indexOf(initialPosition);
 
-    const { possibleSquares, freePieces } = PawnLogic(id, pieces);
-
-    if (possibleSquares.includes(position)) {
-      pieces[indexOfElement].position[positionIndex] = position;
-      dispatch(movePiece([...pieces]));
-    }
+    const { possibleSquares, freePieces } = calculateMove(id, pieces);
     if (freePieces.includes(position)) {
-      const freePiece = pieces.filter((p) => p.position.includes(position));
-      const freePieceIndex = pieces.indexOf(freePiece);
-      pieces[freePieceIndex].position = [
-        ...pieces[freePieceIndex].position.filter((pos) => pos !== position),
-      ];
+      var freePiece = getPieceFromPosition(pieces, position);
+      const index = getIndexOfPiece(pieces, freePiece);
+      freePiece.position = freePiece.position.filter((p) => p !== position);
+      pieces[index] = freePiece;
+    }
+    if (possibleSquares.includes(position) || freePieces.includes(position)) {
       pieces[indexOfElement].position[positionIndex] = position;
       dispatch(movePiece([...pieces]));
     }
