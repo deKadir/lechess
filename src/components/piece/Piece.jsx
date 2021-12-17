@@ -13,7 +13,7 @@ export default function Tile({ piece, position, color }) {
     type: "piece",
     item: {
       type: "piece",
-      id: `${color}_${piece}_${position}`,
+      id: { color, piece, position },
     },
     collect: (monitor) => ({
       isDragging: !!monitor.isDragging(),
