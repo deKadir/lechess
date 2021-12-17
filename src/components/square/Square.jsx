@@ -1,23 +1,30 @@
-import React, { useRef } from "react";
 import style from "./square.module.scss";
 import { useDrop } from "react-dnd";
-export default function Square({ children, position, movePiece, pieces }) {
+import { useSelector, useDispatch } from "react-redux";
+import { movePiece } from "./../../store/actions/boardActions";
+
+export default function Square({ children, position }) {
+  const { pieces } = useSelector((state) => state);
+  const dispatch = useDispatch();
+
+  //move piece
   const move = (item) => {
     var { id } = item;
+    var [pieceColor, draggedPiece, initialPosition] = id.split("_");
 
-    var [pi, pos] = id.split("_");
-    var element = pieces.find((p) => p.type === pi && p.position.includes(pos));
-
+    //get dragged element from pieces
+    var element = pieces.find(
+      (p) => p.type === draggedPiece && p.position.includes(initialPosition)
+    );
+    //get index of dragged element
     var indexOfElement = pieces.indexOf(element);
-    var positionIndex = element.position.indexOf(pos);
-    console.log(indexOfElement);
-    console.log(positionIndex);
-    movePiece([
-      ...pieces,
-      (pieces[indexOfElement].position[positionIndex] = position),
-    ]);
-    console.log(pieces);
+    //get position of dragged element
+    var positionIndex = element.position.indexOf(initialPosition);
+    pieces[indexOfElement].position[positionIndex] = position;
+    dispatch(movePiece([...pieces]));
   };
+
+  //drop event
   const [{ isOver }, drop] = useDrop({
     accept: "piece",
     drop: (item, monitor) => {
@@ -27,6 +34,7 @@ export default function Square({ children, position, movePiece, pieces }) {
       isOver: !!monitor.isOver(),
     }),
   });
+
   return (
     <div
       ref={drop}
