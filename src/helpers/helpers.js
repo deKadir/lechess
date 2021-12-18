@@ -13,7 +13,7 @@ export const getPieceFromPosition = (pieces, position) => {
 //returns index of piece inside the list
 export const getIndexOfPiece = (pieces, piece) => {
   for (var i in pieces) {
-    if (JSON.stringify(pieces[i]) == JSON.stringify(piece)) {
+    if (JSON.stringify(pieces[i]) === JSON.stringify(piece)) {
       return i;
     }
   }
@@ -25,11 +25,20 @@ export const getXandYaxis = (position) => {
   return { positionX: position[0], positionY: parseInt(position[1]) };
 };
 
-//finds next and previous letters
-export const getCrossLeftAndRight = (position) => {
-  const { positionX } = getXandYaxis(position);
-  return {
-    crossLeft: String.fromCharCode(positionX.charCodeAt(0) + 1),
-    crossRight: String.fromCharCode(positionX.charCodeAt(0) - 1),
-  };
+export const getPreviousLetter = (position) => {
+  return String.fromCharCode(position.charCodeAt(0) - 1);
+};
+export const getNextLetter = (position) => {
+  return String.fromCharCode(position.charCodeAt(0) + 1);
+};
+export const isValidNotation = (position) => {
+  const xAxis = ["a", "b", "c", "d", "e", "f", "g", "h"];
+  const yAxis = [1, 2, 3, 4, 5, 6, 7, 8];
+  let board = [];
+  for (var i = 0; i < xAxis.length; i++) {
+    for (var j = 0; j < yAxis.length; j++) {
+      board.push(`${xAxis[i]}${yAxis[j]}`);
+    }
+  }
+  return board.includes(position);
 };

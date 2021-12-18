@@ -2,7 +2,7 @@ import style from "./square.module.scss";
 import { useDrop } from "react-dnd";
 import { useSelector, useDispatch } from "react-redux";
 import { movePiece } from "./../../store/actions/boardActions";
-import calculateMove, { PawnLogic } from "./../../scripts/pieceLogic";
+import calculateMove from "./../../scripts/pieceLogic";
 import { getPieceFromPosition } from "../../helpers/helpers";
 import { getIndexOfPiece } from "./../../helpers/helpers";
 
