@@ -1,2 +1,3 @@
 export const MOVE_PIECE = "MOVE_PIECE";
 export const RESET_BOARD = "RESET_BOARD";
+export const SET_POSSIBILITIES = "SET_POSSIBILITIES";

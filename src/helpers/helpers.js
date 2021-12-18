@@ -42,3 +42,142 @@ export const isValidNotation = (position) => {
   }
   return board.includes(position);
 };
+export const getPossibleCrossAxises = (item, pieces) => {
+  const possibleSquares = [];
+  const freePieces = [];
+  const { position, color } = item;
+  const { positionX, positionY } = getXandYaxis(position);
+  var x = positionX;
+  var y = positionY;
+  while (true) {
+    x = getNextLetter(x);
+    y++;
+    if (!isValidNotation(`${x}${y}`)) {
+      break;
+    }
+    const piece = getPieceFromPosition(pieces, `${x}${y}`);
+    if (piece) {
+      if (piece.color !== color && piece.type !== "k") {
+        freePieces.push(`${x}${y}`);
+      }
+
+      break;
+    }
+    possibleSquares.push(`${x}${y}`);
+  }
+  x = positionX;
+  y = positionY;
+
+  while (true) {
+    x = getPreviousLetter(x);
+    y--;
+    if (!isValidNotation(`${x}${y}`)) {
+      break;
+    }
+    const piece = getPieceFromPosition(pieces, `${x}${y}`);
+    if (piece) {
+      if (piece.color !== color && piece.type !== "k") {
+        freePieces.push(`${x}${y}`);
+      }
+      break;
+    }
+    possibleSquares.push(`${x}${y}`);
+  }
+  x = positionX;
+  y = positionY;
+  while (true) {
+    x = getPreviousLetter(x);
+    y++;
+    if (!isValidNotation(`${x}${y}`)) {
+      break;
+    }
+    const piece = getPieceFromPosition(pieces, `${x}${y}`);
+    if (piece) {
+      if (piece.color !== color && piece.type !== "k") {
+        freePieces.push(`${x}${y}`);
+      }
+
+      break;
+    }
+    possibleSquares.push(`${x}${y}`);
+  }
+  x = positionX;
+  y = positionY;
+  while (true) {
+    x = getNextLetter(x);
+    y--;
+    if (!isValidNotation(`${x}${y}`)) {
+      break;
+    }
+    const piece = getPieceFromPosition(pieces, `${x}${y}`);
+    if (piece) {
+      if (piece.color !== color && piece.type !== "k") {
+        freePieces.push(`${x}${y}`);
+      }
+
+      break;
+    }
+
+    possibleSquares.push(`${x}${y}`);
+  }
+  return { possibleSquares, freePieces };
+};
+export const getPossibleXandYaxises = (item, pieces) => {
+  const { position, color } = item;
+  const possibleSquares = [];
+  const freePieces = [];
+  const { positionX, positionY } = getXandYaxis(position);
+
+  var x = positionX;
+  var y = positionY;
+  while (true) {
+    x = getPreviousLetter(x);
+    const piece = getPieceFromPosition(pieces, `${x}${positionY}`);
+    if (piece || x.toUpperCase() === x.toLowerCase()) {
+      if (piece && piece.color !== color && piece.type !== "k") {
+        freePieces.push(`${x}${positionY}`);
+      }
+      x = positionX;
+      break;
+    }
+    possibleSquares.push(`${x}${positionY}`);
+  }
+  while (true) {
+    x = getNextLetter(x);
+    const piece = getPieceFromPosition(pieces, `${x}${positionY}`);
+    if (piece || x === "i") {
+      if (piece && piece.color !== color && piece.type !== "k") {
+        freePieces.push(`${x}${positionY}`);
+      }
+      x = positionX;
+      break;
+    }
+    possibleSquares.push(`${x}${positionY}`);
+  }
+
+  while (true) {
+    y++;
+    const piece = getPieceFromPosition(pieces, `${positionX}${y}`);
+    if (piece || y > 8) {
+      if (piece && piece.color !== color && piece.type !== "k") {
+        freePieces.push(`${positionX}${y}`);
+      }
+      y = positionY;
+      break;
+    }
+    possibleSquares.push(`${positionX}${y}`);
+  }
+  while (true) {
+    y--;
+    const piece = getPieceFromPosition(pieces, `${positionX}${y}`);
+    if (piece || y < 1) {
+      if (piece && piece.color !== color && piece.type !== "k") {
+        freePieces.push(`${positionX}${y}`);
+      }
+      y = positionY;
+      break;
+    }
+    possibleSquares.push(`${positionX}${y}`);
+  }
+  return { possibleSquares, freePieces };
+};

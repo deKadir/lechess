@@ -4,6 +4,8 @@ import {
   getPreviousLetter,
   getNextLetter,
   isValidNotation,
+  getPossibleCrossAxises,
+  getPossibleXandYaxises,
 } from "./../helpers/helpers";
 
 export default function calculateMove(item, pieces) {
@@ -100,63 +102,8 @@ export function pawnLogic(item, pieces) {
   return { possibleSquares, freePieces };
 }
 export function rookLogic(item, pieces) {
-  const { position, color } = item;
-  const possibleSquares = [];
-  const freePieces = [];
-  const { positionX, positionY } = getXandYaxis(position);
+  const { possibleSquares, freePieces } = getPossibleXandYaxises(item, pieces);
 
-  var x = positionX;
-  var y = positionY;
-
-  while (true) {
-    x = getPreviousLetter(x);
-    const piece = getPieceFromPosition(pieces, `${x}${positionY}`);
-    if (piece || x.toUpperCase() === x.toLowerCase()) {
-      if (piece && piece.color !== color && piece.type !== "k") {
-        freePieces.push(`${x}${positionY}`);
-      }
-      x = positionX;
-      break;
-    }
-    possibleSquares.push(`${x}${positionY}`);
-  }
-  while (true) {
-    x = getNextLetter(x);
-    const piece = getPieceFromPosition(pieces, `${x}${positionY}`);
-    if (piece || x === "i") {
-      if (piece && piece.color !== color && piece.type !== "k") {
-        freePieces.push(`${x}${positionY}`);
-      }
-      x = positionX;
-      break;
-    }
-    possibleSquares.push(`${x}${positionY}`);
-  }
-
-  while (true) {
-    y++;
-    const piece = getPieceFromPosition(pieces, `${positionX}${y}`);
-    if (piece || y > 8) {
-      if (piece && piece.color !== color && piece.type !== "k") {
-        freePieces.push(`${positionX}${y}`);
-      }
-      y = positionY;
-      break;
-    }
-    possibleSquares.push(`${positionX}${y}`);
-  }
-  while (true) {
-    y--;
-    const piece = getPieceFromPosition(pieces, `${positionX}${y}`);
-    if (piece || y < 1) {
-      if (piece && piece.color !== color && piece.type !== "k") {
-        freePieces.push(`${positionX}${y}`);
-      }
-      y = positionY;
-      break;
-    }
-    possibleSquares.push(`${positionX}${y}`);
-  }
   return { possibleSquares, freePieces };
 }
 export function knightLogic(item, pieces) {
@@ -165,87 +112,8 @@ export function knightLogic(item, pieces) {
   const possibleSquares = [];
 }
 export function bishopLogic(item, pieces) {
-  const { position, color } = item;
-  const freePieces = [];
-  const possibleSquares = [];
-  const { positionX, positionY } = getXandYaxis(position);
-  var x = positionX;
-  var y = positionY;
+  const { possibleSquares, freePieces } = getPossibleCrossAxises(item, pieces);
 
-  while (true) {
-    x = getNextLetter(x);
-    y++;
-    if (!isValidNotation(`${x}${y}`)) {
-      break;
-    }
-    const piece = getPieceFromPosition(pieces, `${x}${y}`);
-    if (piece) {
-      if (piece.color !== color && piece.type !== "k") {
-        freePieces.push(`${x}${y}`);
-      }
-
-      break;
-    }
-    possibleSquares.push(`${x}${y}`);
-  }
-  x = positionX;
-  y = positionY;
-
-  while (true) {
-    x = getPreviousLetter(x);
-    y--;
-    if (!isValidNotation(`${x}${y}`)) {
-      break;
-    }
-    console.log(x);
-    const piece = getPieceFromPosition(pieces, `${x}${y}`);
-    if (piece) {
-      if (piece.color !== color && piece.type !== "k") {
-        freePieces.push(`${x}${y}`);
-      }
-      break;
-    }
-    possibleSquares.push(`${x}${y}`);
-  }
-  x = positionX;
-  y = positionY;
-  while (true) {
-    x = getPreviousLetter(x);
-    y++;
-    if (!isValidNotation(`${x}${y}`)) {
-      break;
-    }
-    const piece = getPieceFromPosition(pieces, `${x}${y}`);
-    if (piece) {
-      if (piece.color !== color && piece.type !== "k") {
-        freePieces.push(`${x}${y}`);
-      }
-
-      break;
-    }
-    possibleSquares.push(`${x}${y}`);
-  }
-  x = positionX;
-  y = positionY;
-  while (true) {
-    x = getNextLetter(x);
-    y--;
-    if (!isValidNotation(`${x}${y}`)) {
-      break;
-    }
-    const piece = getPieceFromPosition(pieces, `${x}${y}`);
-    if (piece) {
-      if (piece.color !== color && piece.type !== "k") {
-        freePieces.push(`${x}${y}`);
-      }
-
-      break;
-    }
-    possibleSquares.push(`${x}${y}`);
-  }
-  x = positionX;
-  y = positionY;
-  console.log(possibleSquares);
   return { possibleSquares, freePieces };
 }
 export function kingLogic(item, pieces) {
@@ -257,10 +125,12 @@ export function kingLogic(item, pieces) {
   var y = positionY;
 }
 export function queenLogic(item, pieces) {
-  const { position, color } = item;
   const possibleSquares = [];
   const freePieces = [];
-  const { positionX, positionY } = getXandYaxis(position);
-  var x = positionX;
-  var y = positionY;
+  possibleSquares.push(...getPossibleCrossAxises(item, pieces).possibleSquares);
+  possibleSquares.push(...getPossibleXandYaxises(item, pieces).possibleSquares);
+  freePieces.push(...getPossibleXandYaxises(item, pieces).freePieces);
+  freePieces.push(...getPossibleCrossAxises(item, pieces).freePieces);
+  console.log(freePieces);
+  return { possibleSquares, freePieces };
 }
