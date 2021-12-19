@@ -107,9 +107,34 @@ export function rookLogic(item, pieces) {
   return { possibleSquares, freePieces };
 }
 export function knightLogic(item, pieces) {
-  const { position } = item;
+  const { position, color } = item;
   const freePieces = [];
   const possibleSquares = [];
+  const { positionX, positionY } = getXandYaxis(position);
+  var possibilities = [
+    `${getNextLetter(positionX)}${positionY - 2}`,
+    `${getPreviousLetter(positionX)}${positionY - 2}`,
+    `${getNextLetter(getNextLetter(positionX))}${positionY - 1}`,
+    `${getPreviousLetter(getPreviousLetter(positionX))}${positionY - 1}`,
+    `${getPreviousLetter(getPreviousLetter(positionX))}${positionY + 1}`,
+    `${getNextLetter(getNextLetter(positionX))}${positionY + 1}`,
+    `${getPreviousLetter(positionX)}${positionY + 2}`,
+    `${getNextLetter(positionX)}${positionY + 2}`,
+  ];
+  possibilities = possibilities.filter((pos) => isValidNotation(pos));
+
+  for (var i in possibilities) {
+    var piece = getPieceFromPosition(pieces, possibilities[i]);
+    if (piece) {
+      if (piece.color !== color) {
+        freePieces.push(possibilities[i]);
+      }
+    } else {
+      possibleSquares.push(possibilities[i]);
+    }
+  }
+
+  return { possibleSquares, freePieces };
 }
 export function bishopLogic(item, pieces) {
   const { possibleSquares, freePieces } = getPossibleCrossAxises(item, pieces);
@@ -121,8 +146,28 @@ export function kingLogic(item, pieces) {
   const possibleSquares = [];
   const freePieces = [];
   const { positionX, positionY } = getXandYaxis(position);
-  var x = positionX;
-  var y = positionY;
+  const possibilities = [
+    `${getNextLetter(positionX)}${positionY + 1}`,
+    `${getNextLetter(positionX)}${positionY - 1}`,
+    `${getNextLetter(positionX)}${positionY}`,
+    `${getPreviousLetter(positionX)}${positionY + 1}`,
+    `${getPreviousLetter(positionX)}${positionY - 1}`,
+    `${getPreviousLetter(positionX)}${positionY}`,
+    `${positionX}${positionY + 1}`,
+    `${positionX}${positionY - 1}`,
+  ];
+  for (var i in possibilities) {
+    var existingPiece = getPieceFromPosition(pieces, possibilities[i]);
+    if (existingPiece) {
+      if (existingPiece.color !== color) {
+        freePieces.push(possibilities[i]);
+      }
+    } else {
+      possibleSquares.push(possibilities[i]);
+    }
+  }
+
+  return { possibleSquares, freePieces };
 }
 export function queenLogic(item, pieces) {
   const possibleSquares = [];
@@ -131,6 +176,5 @@ export function queenLogic(item, pieces) {
   possibleSquares.push(...getPossibleXandYaxises(item, pieces).possibleSquares);
   freePieces.push(...getPossibleXandYaxises(item, pieces).freePieces);
   freePieces.push(...getPossibleCrossAxises(item, pieces).freePieces);
-  console.log(freePieces);
   return { possibleSquares, freePieces };
 }

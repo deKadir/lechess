@@ -7,7 +7,10 @@ export const getAllPositions = (pieces) => {
 
 //returns piece from the position
 export const getPieceFromPosition = (pieces, position) => {
-  return pieces.find((p) => p.position.includes(position));
+  if (isValidNotation(position)) {
+    return pieces.find((p) => p.position.includes(position));
+  }
+  return undefined;
 };
 
 //returns index of piece inside the list

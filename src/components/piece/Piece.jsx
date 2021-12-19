@@ -1,6 +1,5 @@
 import style from "./piece.module.scss";
 import { useDrag } from "react-dnd";
-
 export default function Tile({ piece, position, color }) {
   let img;
 

@@ -5,6 +5,10 @@ import { movePiece } from "./../../store/actions/boardActions";
 import calculateMove from "./../../scripts/pieceLogic";
 import { getPieceFromPosition } from "../../helpers/helpers";
 import { getIndexOfPiece } from "./../../helpers/helpers";
+import {
+  setPossibleMoves,
+  setFreePieces,
+} from "../../store/actions/animationActions";
 
 export default function Square({ children, position }) {
   const { pieces } = useSelector((state) => state);
@@ -26,6 +30,12 @@ export default function Square({ children, position }) {
     var positionIndex = element.position.indexOf(initialPosition);
 
     const { possibleSquares, freePieces } = calculateMove(id, pieces);
+
+    if (!isOver) {
+      dispatch(setFreePieces([...freePieces]));
+      dispatch(setPossibleMoves([...possibleSquares]));
+    }
+
     if (freePieces.includes(position)) {
       var freePiece = getPieceFromPosition(pieces, position);
       const index = getIndexOfPiece(pieces, freePiece);
