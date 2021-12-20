@@ -48,6 +48,7 @@ export const isValidNotation = (position) => {
 export const getPossibleCrossAxises = (item, pieces) => {
   const possibleSquares = [];
   const freePieces = [];
+  const protecteds = [];
   const { position, color } = item;
   const { positionX, positionY } = getXandYaxis(position);
   var x = positionX;
@@ -60,10 +61,11 @@ export const getPossibleCrossAxises = (item, pieces) => {
     }
     const piece = getPieceFromPosition(pieces, `${x}${y}`);
     if (piece) {
-      if (piece.color !== color && piece.type !== "k") {
+      if (piece.color !== color) {
         freePieces.push(`${x}${y}`);
+      } else {
+        protecteds.push(`${x}${y}`);
       }
-
       break;
     }
     possibleSquares.push(`${x}${y}`);
@@ -79,8 +81,10 @@ export const getPossibleCrossAxises = (item, pieces) => {
     }
     const piece = getPieceFromPosition(pieces, `${x}${y}`);
     if (piece) {
-      if (piece.color !== color && piece.type !== "k") {
+      if (piece.color !== color) {
         freePieces.push(`${x}${y}`);
+      } else {
+        protecteds.push(`${x}${y}`);
       }
       break;
     }
@@ -96,8 +100,10 @@ export const getPossibleCrossAxises = (item, pieces) => {
     }
     const piece = getPieceFromPosition(pieces, `${x}${y}`);
     if (piece) {
-      if (piece.color !== color && piece.type !== "k") {
+      if (piece.color !== color) {
         freePieces.push(`${x}${y}`);
+      } else {
+        protecteds.push(`${x}${y}`);
       }
 
       break;
@@ -114,8 +120,10 @@ export const getPossibleCrossAxises = (item, pieces) => {
     }
     const piece = getPieceFromPosition(pieces, `${x}${y}`);
     if (piece) {
-      if (piece.color !== color && piece.type !== "k") {
+      if (piece.color !== color) {
         freePieces.push(`${x}${y}`);
+      } else {
+        protecteds.push(`${x}${y}`);
       }
 
       break;
@@ -123,12 +131,13 @@ export const getPossibleCrossAxises = (item, pieces) => {
 
     possibleSquares.push(`${x}${y}`);
   }
-  return { possibleSquares, freePieces };
+  return { possibleSquares, freePieces, protecteds };
 };
 export const getPossibleXandYaxises = (item, pieces) => {
   const { position, color } = item;
   const possibleSquares = [];
   const freePieces = [];
+  const protecteds = [];
   const { positionX, positionY } = getXandYaxis(position);
 
   var x = positionX;
@@ -137,8 +146,10 @@ export const getPossibleXandYaxises = (item, pieces) => {
     x = getPreviousLetter(x);
     const piece = getPieceFromPosition(pieces, `${x}${positionY}`);
     if (piece || x.toUpperCase() === x.toLowerCase()) {
-      if (piece && piece.color !== color && piece.type !== "k") {
+      if (piece && piece.color !== color) {
         freePieces.push(`${x}${positionY}`);
+      } else {
+        protecteds.push(`${x}${positionY}`);
       }
       x = positionX;
       break;
@@ -149,8 +160,10 @@ export const getPossibleXandYaxises = (item, pieces) => {
     x = getNextLetter(x);
     const piece = getPieceFromPosition(pieces, `${x}${positionY}`);
     if (piece || x === "i") {
-      if (piece && piece.color !== color && piece.type !== "k") {
+      if (piece && piece.color !== color) {
         freePieces.push(`${x}${positionY}`);
+      } else {
+        protecteds.push(`${x}${positionY}`);
       }
       x = positionX;
       break;
@@ -162,8 +175,10 @@ export const getPossibleXandYaxises = (item, pieces) => {
     y++;
     const piece = getPieceFromPosition(pieces, `${positionX}${y}`);
     if (piece || y > 8) {
-      if (piece && piece.color !== color && piece.type !== "k") {
+      if (piece && piece.color !== color) {
         freePieces.push(`${positionX}${y}`);
+      } else {
+        protecteds.push(`${positionX}${y}`);
       }
       y = positionY;
       break;
@@ -174,13 +189,29 @@ export const getPossibleXandYaxises = (item, pieces) => {
     y--;
     const piece = getPieceFromPosition(pieces, `${positionX}${y}`);
     if (piece || y < 1) {
-      if (piece && piece.color !== color && piece.type !== "k") {
+      if (piece && piece.color !== color) {
         freePieces.push(`${positionX}${y}`);
+      } else {
+        protecteds.push(`${positionX}${y}`);
       }
       y = positionY;
       break;
     }
     possibleSquares.push(`${positionX}${y}`);
   }
-  return { possibleSquares, freePieces };
+  return { possibleSquares, freePieces, protecteds };
+};
+export const kingMoves = (position) => {
+  const { positionX, positionY } = getXandYaxis(position);
+  const possibilities = [
+    `${getNextLetter(positionX)}${positionY + 1}`,
+    `${getNextLetter(positionX)}${positionY - 1}`,
+    `${getNextLetter(positionX)}${positionY}`,
+    `${getPreviousLetter(positionX)}${positionY + 1}`,
+    `${getPreviousLetter(positionX)}${positionY - 1}`,
+    `${getPreviousLetter(positionX)}${positionY}`,
+    `${positionX}${positionY + 1}`,
+    `${positionX}${positionY - 1}`,
+  ];
+  return possibilities;
 };

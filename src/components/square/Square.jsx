@@ -17,7 +17,7 @@ export default function Square({ children, position }) {
   //move piece
   const move = (item) => {
     var { id } = item;
-    const draggedPiece = id.piece;
+    const draggedPiece = id.type;
     const initialPosition = id.position;
 
     //get dragged element from pieces
