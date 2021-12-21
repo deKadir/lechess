@@ -1,3 +1,4 @@
+import { calculateMove } from "../scripts/pieceLogic";
 //returns positions of the all pieces
 export const getAllPositions = (pieces) => {
   const positions = [];
@@ -218,4 +219,50 @@ export const kingMoves = (position) => {
 
 export const getEnemyKing = (pieces, color) => {
   return pieces.find((p) => p.type === "k" && p.color !== color);
+};
+export const isCheck = (pieces, allPieces, enemyKing) => {
+  var attackingPieces = [];
+
+  for (var j in pieces) {
+    var piece = pieces[j];
+    for (var k in piece.position) {
+      var { freePieces: free } = calculateMove(
+        {
+          color: piece.color,
+          type: piece.type,
+          position: piece.position[k],
+        },
+        allPieces
+      );
+      if (free.includes(enemyKing.position[0])) {
+        attackingPieces.push({
+          color: piece.color,
+          type: piece.type,
+          position: piece.position[k],
+        });
+      }
+    }
+  }
+
+  return { attackingPieces };
+};
+export const calculateAllMoves = (pieceSet, pieces) => {
+  var possibleSquares = [];
+  var freePieces = [];
+  for (var j in pieceSet) {
+    var piece = pieceSet[j];
+    for (var k in piece.position) {
+      var { freePieces: free, possibleSquares: possible } = calculateMove(
+        {
+          color: piece.color,
+          type: piece.type,
+          position: piece.position[k],
+        },
+        pieces
+      );
+      freePieces.push(...free);
+      possibleSquares.push(...possible);
+    }
+  }
+  return { freePieces, possibleSquares };
 };

@@ -3,7 +3,11 @@ import { useDrop } from "react-dnd";
 import { useSelector, useDispatch } from "react-redux";
 import { movePiece } from "./../../store/actions/boardActions";
 import { calculateMove } from "./../../scripts/pieceLogic";
-import { getEnemyKing } from "./../../helpers/helpers";
+import {
+  isCheck,
+  calculateAllMoves,
+  getEnemyKing,
+} from "./../../helpers/helpers";
 
 export default function Square({ children, position }) {
   const { pieces } = useSelector((state) => state);
@@ -34,35 +38,64 @@ export default function Square({ children, position }) {
         }
       }
       dispatch(movePiece([...pieces]));
-      var { possibleSquares: possible, freePieces: free } = calculateMove(
-        { type, color, position },
-        pieces
-      );
       var enemyKing = getEnemyKing(pieces, color);
-      //check
-      if (free.includes(enemyKing.position[0])) {
-        var kingPossible = calculateMove(
+      const attackers = pieces.filter(
+        (p) => p.color === color && p.type !== "k"
+      );
+      const defenders = pieces.filter((p) => p.color !== color);
+      var { attackingPieces } = isCheck(attackers, pieces, enemyKing);
+      const { possibleSquares: kingPossible, freePieces: kingFree } =
+        calculateMove(
           {
-            type: enemyKing.type,
+            type: "k",
             color: enemyKing.color,
             position: enemyKing.position[0],
           },
           pieces
         );
+      var check = false;
+      var checkMate = false;
 
-        if (type === "q" || type === "b") {
-          //block if its queen or bishop
+      if (attackingPieces.length == 2) {
+        check = true;
+        const { freePieces: freeP } = calculateAllMoves(defenders, pieces);
+        if (!kingPossible.length && !kingFree.length) {
+          checkMate = true;
         }
+      } else if (attackingPieces.length == 1) {
+        check = true;
+        const { freePieces: freeP, possibleSquares: possibleS } =
+          calculateAllMoves(defenders, pieces);
+
         if (
-          !(
-            kingPossible.freePieces.length ||
-            kingPossible.possibleSquares.length
-          )
+          attackingPieces[0].type === "q" ||
+          attackingPieces[0].type === "b" ||
+          attackingPieces[0].type === "r"
         ) {
-          console.log("checkmate");
+          const { possibleSquares: attackingPossible } = calculateMove(
+            attackingPieces[0],
+            pieces
+          );
+          const blockingChances = possibleS.filter((p) =>
+            attackingPossible.includes(p)
+          );
+          var piecesCopy = [...pieces];
+          piecesCopy.push({
+            type: "test",
+            color: "any",
+            position: [...blockingChances],
+          });
+          const { attackingPieces: attck } = isCheck(
+            attackers,
+            piecesCopy,
+            enemyKing
+          );
+          if (attck.length && !kingPossible.length && !kingFree.length) {
+            checkMate = true;
+          }
         }
-        console.log(kingPossible);
       }
+      console.log(`check:${check} checkmate:${checkMate}`);
     }
   };
 
