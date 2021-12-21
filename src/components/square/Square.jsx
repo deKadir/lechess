@@ -2,49 +2,67 @@ import style from "./square.module.scss";
 import { useDrop } from "react-dnd";
 import { useSelector, useDispatch } from "react-redux";
 import { movePiece } from "./../../store/actions/boardActions";
-import calculateMove from "./../../scripts/pieceLogic";
-import { getPieceFromPosition } from "../../helpers/helpers";
-import { getIndexOfPiece } from "./../../helpers/helpers";
-import {
-  setPossibleMoves,
-  setFreePieces,
-} from "../../store/actions/animationActions";
+import { calculateMove } from "./../../scripts/pieceLogic";
+import { getEnemyKing } from "./../../helpers/helpers";
 
 export default function Square({ children, position }) {
   const { pieces } = useSelector((state) => state);
   const dispatch = useDispatch();
-
-  //move piece
   const move = (item) => {
-    var { id } = item;
-    const draggedPiece = id.type;
-    const initialPosition = id.position;
+    var { id: piece } = item;
+    const { type, color, position: piecePosition } = piece;
 
-    //get dragged element from pieces
-    var element = pieces.find(
-      (p) => p.type === draggedPiece && p.position.includes(initialPosition)
-    );
-    //get index of dragged element
-    var indexOfElement = pieces.indexOf(element);
-    //get position of dragged element
-    var positionIndex = element.position.indexOf(initialPosition);
+    const { possibleSquares, freePieces } = calculateMove(piece, pieces);
 
-    const { possibleSquares, freePieces } = calculateMove(id, pieces);
-
-    if (!isOver) {
-      dispatch(setFreePieces([...freePieces]));
-      dispatch(setPossibleMoves([...possibleSquares]));
-    }
-
-    if (freePieces.includes(position)) {
-      var freePiece = getPieceFromPosition(pieces, position);
-      const index = getIndexOfPiece(pieces, freePiece);
-      freePiece.position = freePiece.position.filter((p) => p !== position);
-      pieces[index] = freePiece;
-    }
     if (possibleSquares.includes(position) || freePieces.includes(position)) {
-      pieces[indexOfElement].position[positionIndex] = position;
+      //eat free piece if exist
+      if (freePieces.includes(position)) {
+        for (var x in pieces) {
+          var p = pieces[x].position.indexOf(position);
+          if (p !== -1) {
+            pieces[x].position.splice(p, 1);
+          }
+        }
+      }
+      //move
+
+      var i = 0;
+      for (i in pieces) {
+        var pos = pieces[i].position.indexOf(piecePosition);
+        if (pos !== -1) {
+          pieces[i].position[pos] = position;
+        }
+      }
       dispatch(movePiece([...pieces]));
+      var { possibleSquares: possible, freePieces: free } = calculateMove(
+        { type, color, position },
+        pieces
+      );
+      var enemyKing = getEnemyKing(pieces, color);
+      //check
+      if (free.includes(enemyKing.position[0])) {
+        var kingPossible = calculateMove(
+          {
+            type: enemyKing.type,
+            color: enemyKing.color,
+            position: enemyKing.position[0],
+          },
+          pieces
+        );
+
+        if (type === "q" || type === "b") {
+          //block if its queen or bishop
+        }
+        if (
+          !(
+            kingPossible.freePieces.length ||
+            kingPossible.possibleSquares.length
+          )
+        ) {
+          console.log("checkmate");
+        }
+        console.log(kingPossible);
+      }
     }
   };
 

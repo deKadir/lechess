@@ -16,7 +16,7 @@ export const getPieceFromPosition = (pieces, position) => {
 //returns index of piece inside the list
 export const getIndexOfPiece = (pieces, piece) => {
   for (var i in pieces) {
-    if (JSON.stringify(pieces[i]) === JSON.stringify(piece)) {
+    if (pieces[i].position.includes(piece.position)) {
       return i;
     }
   }
@@ -214,4 +214,8 @@ export const kingMoves = (position) => {
     `${positionX}${positionY - 1}`,
   ];
   return possibilities;
+};
+
+export const getEnemyKing = (pieces, color) => {
+  return pieces.find((p) => p.type === "k" && p.color !== color);
 };

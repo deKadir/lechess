@@ -1,3 +1,4 @@
+import { isValidNotation } from "./../helpers/helpers";
 import {
   getXandYaxis,
   getPieceFromPosition,
@@ -6,9 +7,9 @@ import {
   getPossibleCrossAxises,
   getPossibleXandYaxises,
   kingMoves,
-} from "./../helpers/helpers";
+} from "../helpers/helpers";
 
-export default function calculateMove(item, pieces) {
+export const calculateMove = (item, pieces) => {
   switch (item.type) {
     case "p":
       return pawnLogic(item, pieces);
@@ -25,7 +26,7 @@ export default function calculateMove(item, pieces) {
     default:
       return { possibleSquares: [], freePieces: [] };
   }
-}
+};
 
 export function pawnLogic(item, pieces) {
   const possibleSquares = [];
@@ -211,9 +212,11 @@ export function kingLogic(item, pieces) {
   }
   illegalMoves = [...new Set(illegalMoves)];
   possibleSquares = possibleSquares.filter(
-    (square) => !illegalMoves.includes(square)
+    (square) => !illegalMoves.includes(square) && isValidNotation(square)
   );
-  freePieces = freePieces.filter((square) => !illegalMoves.includes(square));
+  freePieces = freePieces.filter(
+    (square) => !illegalMoves.includes(square) && isValidNotation(square)
+  );
 
   return { possibleSquares, freePieces };
 }
@@ -221,11 +224,13 @@ export function queenLogic(item, pieces) {
   const possibleSquares = [];
   const freePieces = [];
   const protecteds = [];
+  var isCheck = false;
   possibleSquares.push(...getPossibleCrossAxises(item, pieces).possibleSquares);
   possibleSquares.push(...getPossibleXandYaxises(item, pieces).possibleSquares);
   freePieces.push(...getPossibleXandYaxises(item, pieces).freePieces);
   freePieces.push(...getPossibleCrossAxises(item, pieces).freePieces);
   protecteds.push(...getPossibleCrossAxises(item, pieces).protecteds);
   protecteds.push(...getPossibleXandYaxises(item, pieces).protecteds);
-  return { possibleSquares, freePieces, protecteds };
+
+  return { possibleSquares, freePieces, protecteds, isCheck };
 }
