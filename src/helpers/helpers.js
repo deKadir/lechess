@@ -9,7 +9,7 @@ export const getAllPositions = (pieces) => {
 //returns piece from the position
 export const getPieceFromPosition = (pieces, position) => {
   if (isValidNotation(position)) {
-    return pieces.find((p) => p.position.includes(position));
+    return pieces.find((p) => p.position === position);
   }
   return undefined;
 };
@@ -17,7 +17,7 @@ export const getPieceFromPosition = (pieces, position) => {
 //returns index of piece inside the list
 export const getIndexOfPiece = (pieces, piece) => {
   for (var i in pieces) {
-    if (pieces[i].position.includes(piece.position)) {
+    if (pieces[i].position === piece.position) {
       return i;
     }
   }
@@ -217,33 +217,28 @@ export const kingMoves = (position) => {
   return possibilities;
 };
 
-export const getEnemyKing = (pieces, color) => {
-  return pieces.find((p) => p.type === "k" && p.color !== color);
-};
 export const getKing = (pieces, color) => {
   return pieces.find((p) => p.type === "k" && p.color === color);
 };
 export const isCheck = (pieces, allPieces, enemyKing) => {
   var attackingPieces = [];
-
   for (var j in pieces) {
     var piece = pieces[j];
-    for (var k in piece.position) {
-      var { freePieces: free } = calculateMove(
-        {
-          color: piece.color,
-          type: piece.type,
-          position: piece.position[k],
-        },
-        allPieces
-      );
-      if (free.includes(enemyKing.position[0])) {
-        attackingPieces.push({
-          color: piece.color,
-          type: piece.type,
-          position: piece.position[k],
-        });
-      }
+
+    var { freePieces: free } = calculateMove(
+      {
+        color: piece.color,
+        type: piece.type,
+        position: piece.position,
+      },
+      allPieces
+    );
+    if (free.includes(enemyKing.position)) {
+      attackingPieces.push({
+        color: piece.color,
+        type: piece.type,
+        position: piece.position,
+      });
     }
   }
 
@@ -254,18 +249,18 @@ export const calculateAllMoves = (pieceSet, pieces) => {
   var freePieces = [];
   for (var j in pieceSet) {
     var piece = pieceSet[j];
-    for (var k in piece.position) {
-      var { freePieces: free, possibleSquares: possible } = calculateMove(
-        {
-          color: piece.color,
-          type: piece.type,
-          position: piece.position[k],
-        },
-        pieces
-      );
-      freePieces.push(...free);
-      possibleSquares.push(...possible);
-    }
+
+    var { freePieces: free, possibleSquares: possible } = calculateMove(
+      {
+        color: piece.color,
+        type: piece.type,
+        position: piece.position,
+      },
+      pieces
+    );
+    freePieces.push(...free);
+    possibleSquares.push(...possible);
   }
+
   return { freePieces, possibleSquares };
 };

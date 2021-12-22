@@ -63,8 +63,6 @@ export function pawnLogic(item, pieces) {
       );
       if (color === "w") {
         freePieces.push(`${crossLeft}${positionY - 1}`);
-      } else {
-        protecteds.push(`${crossLeft}${positionY - 1}`);
       }
     }
     const p2 = getPieceFromPosition(pieces, `${crossRight}${positionY - 1}`);
@@ -75,15 +73,11 @@ export function pawnLogic(item, pieces) {
       );
       if (color === "w") {
         freePieces.push(`${crossRight}${positionY - 1}`);
-      } else {
-        protecteds.push(`${crossRight}${positionY - 1}`);
       }
     }
   }
   //pawn is white
   else {
-    protecteds.push(`${crossLeft}${positionY + 1}`);
-    protecteds.push(`${crossRight}${positionY + 1}`);
     if (!getPieceFromPosition(pieces, `${positionX}${positionY + 1}`)) {
       possibleSquares.push(`${positionX}${positionY + 1}`);
       if (
@@ -102,8 +96,6 @@ export function pawnLogic(item, pieces) {
       );
       if (color === "b") {
         freePieces.push(`${crossLeft}${positionY + 1}`);
-      } else {
-        protecteds.push(`${crossLeft}${positionY + 1}`);
       }
     }
     const p2 = getPieceFromPosition(pieces, `${crossRight}${positionY + 1}`);
@@ -114,8 +106,6 @@ export function pawnLogic(item, pieces) {
       );
       if (color === "b") {
         freePieces.push(`${crossRight}${positionY + 1}`);
-      } else {
-        protecteds.push(`${crossRight}${positionY + 1}`);
       }
     }
   }
@@ -162,52 +152,25 @@ export function knightLogic(item, pieces) {
   return { possibleSquares, freePieces, protecteds };
 }
 export function bishopLogic(item, pieces) {
-  const { possibleSquares, freePieces, protecteds } = getPossibleCrossAxises(
-    item,
-    pieces
-  );
+  const { possibleSquares, freePieces } = getPossibleCrossAxises(item, pieces);
 
-  return { possibleSquares, freePieces, protecteds };
+  return { possibleSquares, freePieces };
 }
 export function kingLogic(item, pieces) {
   const { position, color } = item;
   var possibleSquares = [];
   var freePieces = [];
-  var illegalMoves = [];
+
   const possibilities = kingMoves(position);
-  const enemyKing = pieces.find((p) => p.type === "k" && p.color !== color);
-  illegalMoves.push(...kingMoves(enemyKing.position[0]));
+
   for (var i in possibilities) {
     var existingPiece = getPieceFromPosition(pieces, possibilities[i]);
     if (existingPiece) {
       if (existingPiece.color !== color) {
         freePieces.push(possibilities[i]);
-      } else {
-        illegalMoves.push(possibilities[i]);
       }
     } else {
       possibleSquares.push(possibilities[i]);
-    }
-  }
-  var enemyPieces = pieces.filter((p) => p.color !== color && p.type !== "k");
-
-  for (var j in enemyPieces) {
-    var enemy = enemyPieces[j];
-    for (var k in enemy.position) {
-      var { possibleSquares: possible, protecteds } = calculateMove(
-        {
-          color: enemy.color,
-          type: enemy.type,
-          position: enemy.position[k],
-        },
-        pieces
-      );
-      if (protecteds) {
-        illegalMoves.push(...protecteds);
-      }
-      if (enemy.type !== "p") {
-        illegalMoves.push(...possible);
-      }
     }
   }
 
@@ -216,14 +179,10 @@ export function kingLogic(item, pieces) {
 export function queenLogic(item, pieces) {
   const possibleSquares = [];
   const freePieces = [];
-  const protecteds = [];
-  var isCheck = false;
   possibleSquares.push(...getPossibleCrossAxises(item, pieces).possibleSquares);
   possibleSquares.push(...getPossibleXandYaxises(item, pieces).possibleSquares);
   freePieces.push(...getPossibleXandYaxises(item, pieces).freePieces);
   freePieces.push(...getPossibleCrossAxises(item, pieces).freePieces);
-  protecteds.push(...getPossibleCrossAxises(item, pieces).protecteds);
-  protecteds.push(...getPossibleXandYaxises(item, pieces).protecteds);
 
-  return { possibleSquares, freePieces, protecteds, isCheck };
+  return { possibleSquares, freePieces };
 }

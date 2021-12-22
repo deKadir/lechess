@@ -25,7 +25,7 @@ export default function Tile({ piece, position, color }) {
       ref={drag}
       key={position}
       src={img}
-      style={{ opacity: isDragging ? 0 : 1 }}
+      style={{ opacity: isDragging ? 0.2 : 1 }}
     />
   );
 }

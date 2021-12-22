@@ -23,13 +23,13 @@ export default function Board() {
         <Square key={pgn} position={pgn}>
           {pieces.map((p) => {
             //set piece positions to squares
-            if (p.position.includes(pgn)) {
+            if (pgn.includes(p.position)) {
               return (
                 <Piece
                   key={pgn}
                   color={p.color}
                   piece={p.type}
-                  position={pgn}
+                  position={p.position}
                 />
               );
             }

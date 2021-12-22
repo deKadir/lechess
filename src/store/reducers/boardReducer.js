@@ -3,65 +3,166 @@ const initial_pieces = [
   {
     type: "r",
     color: "b",
-    position: ["a8", "h8"],
+    position: "h8",
+  },
+  {
+    type: "r",
+    color: "b",
+    position: "a8",
+  },
+
+  {
+    type: "n",
+    color: "b",
+    position: "b8",
   },
   {
     type: "n",
     color: "b",
-    position: ["b8", "g8"],
+    position: "g8",
   },
   {
     type: "b",
     color: "b",
-    position: ["c8", "f8"],
+    position: "f8",
+  },
+  {
+    type: "b",
+    color: "b",
+    position: "c8",
   },
   {
     type: "q",
     color: "b",
-    position: ["d8"],
+    position: "d8",
   },
   {
     type: "k",
     color: "b",
-    position: ["e8"],
+    position: "e8",
   },
 
   {
     type: "p",
     color: "b",
-    position: ["a7", "b7", "c7", "d7", "e7", "f7", "g7", "h7"],
+    position: "a7",
+  },
+  {
+    type: "p",
+    color: "b",
+    position: "b7",
+  },
+  {
+    type: "p",
+    color: "b",
+    position: "c7",
+  },
+  {
+    type: "p",
+    color: "b",
+    position: "d7",
+  },
+  {
+    type: "p",
+    color: "b",
+    position: "e7",
+  },
+  {
+    type: "p",
+    color: "b",
+    position: "f7",
+  },
+  {
+    type: "p",
+    color: "b",
+    position: "g7",
+  },
+  {
+    type: "p",
+    color: "b",
+    position: "h7",
   },
   //white
   {
     type: "r",
     color: "w",
-    position: ["a1", "h1"],
+    position: "a1",
+  },
+  {
+    type: "r",
+    color: "w",
+    position: "h1",
   },
   {
     type: "n",
     color: "w",
-    position: ["b1", "g1"],
+    position: "b1",
+  },
+  {
+    type: "n",
+    color: "w",
+    position: "g1",
   },
   {
     type: "b",
     color: "w",
-    position: ["c1", "f1"],
+    position: "c1",
+  },
+  {
+    type: "b",
+    color: "w",
+    position: "f1",
   },
   {
     type: "q",
     color: "w",
-    position: ["d1"],
+    position: "d1",
   },
   {
     type: "k",
     color: "w",
-    position: ["e1"],
+    position: "e1",
   },
 
   {
     type: "p",
     color: "w",
-    position: ["a2", "b2", "c2", "d2", "e2", "f2", "g2", "h2"],
+    position: "a2",
+  },
+  {
+    type: "p",
+    color: "w",
+    position: "b2",
+  },
+  {
+    type: "p",
+    color: "w",
+    position: "c2",
+  },
+  {
+    type: "p",
+    color: "w",
+    position: "d2",
+  },
+  {
+    type: "p",
+    color: "w",
+    position: "e2",
+  },
+  {
+    type: "p",
+    color: "w",
+    position: "f2",
+  },
+  {
+    type: "p",
+    color: "w",
+    position: "g2",
+  },
+  {
+    type: "p",
+    color: "w",
+    position: "h2",
   },
 ];
 
