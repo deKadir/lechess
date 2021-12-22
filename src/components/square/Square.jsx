@@ -7,6 +7,7 @@ import {
   isCheck,
   calculateAllMoves,
   getEnemyKing,
+  getKing,
 } from "./../../helpers/helpers";
 
 export default function Square({ children, position }) {
@@ -15,35 +16,53 @@ export default function Square({ children, position }) {
   const move = (item) => {
     var { id: piece } = item;
     const { type, color, position: piecePosition } = piece;
-
+    var isIllegalMove = false;
     const { possibleSquares, freePieces } = calculateMove(piece, pieces);
+    const myPieces = pieces.filter((p) => p.color === color && p.type !== "k");
+    const enemyPieces = pieces.filter(
+      (p) => p.color !== color && p.type !== "k"
+    );
+    const piecesCopy = JSON.parse(JSON.stringify(pieces));
 
     if (possibleSquares.includes(position) || freePieces.includes(position)) {
       //eat free piece if exist
       if (freePieces.includes(position)) {
-        for (var x in pieces) {
-          var p = pieces[x].position.indexOf(position);
+        for (var x in piecesCopy) {
+          var p = piecesCopy[x].position.indexOf(position);
           if (p !== -1) {
-            pieces[x].position.splice(p, 1);
+            piecesCopy[x].position.splice(p, 1);
           }
         }
       }
+
       //move
 
       var i = 0;
-      for (i in pieces) {
-        var pos = pieces[i].position.indexOf(piecePosition);
+      for (i in piecesCopy) {
+        var pos = piecesCopy[i].position.indexOf(piecePosition);
         if (pos !== -1) {
-          pieces[i].position[pos] = position;
+          piecesCopy[i].position[pos] = position;
         }
       }
-      dispatch(movePiece([...pieces]));
-      var enemyKing = getEnemyKing(pieces, color);
-      const attackers = pieces.filter(
-        (p) => p.color === color && p.type !== "k"
+      const king = getKing(piecesCopy, color);
+      var { attackingPieces: attacking } = isCheck(
+        enemyPieces,
+        piecesCopy,
+        king
       );
+      if (attacking.length) {
+        console.log("illegal");
+        dispatch(movePiece([...pieces]));
+      } else {
+        console.log("legal");
+        dispatch(movePiece([...piecesCopy]));
+      }
+      console.log(piecesCopy);
+      //check if check or checkmate
+      var enemyKing = getEnemyKing(pieces, color);
+
       const defenders = pieces.filter((p) => p.color !== color);
-      var { attackingPieces } = isCheck(attackers, pieces, enemyKing);
+      var { attackingPieces } = isCheck(myPieces, pieces, enemyKing);
       const { possibleSquares: kingPossible, freePieces: kingFree } =
         calculateMove(
           {
@@ -79,14 +98,14 @@ export default function Square({ children, position }) {
           const blockingChances = possibleS.filter((p) =>
             attackingPossible.includes(p)
           );
-          var piecesCopy = [...pieces];
+
           piecesCopy.push({
             type: "test",
             color: "any",
             position: [...blockingChances],
           });
           const { attackingPieces: attck } = isCheck(
-            attackers,
+            myPieces,
             piecesCopy,
             enemyKing
           );

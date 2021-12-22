@@ -18,12 +18,12 @@ const initial_pieces = [
   {
     type: "q",
     color: "b",
-    position: ["e8"],
+    position: ["d8"],
   },
   {
     type: "k",
     color: "b",
-    position: ["d8"],
+    position: ["e8"],
   },
 
   {
@@ -50,12 +50,12 @@ const initial_pieces = [
   {
     type: "q",
     color: "w",
-    position: ["e1"],
+    position: ["d1"],
   },
   {
     type: "k",
     color: "w",
-    position: ["d1"],
+    position: ["e1"],
   },
 
   {

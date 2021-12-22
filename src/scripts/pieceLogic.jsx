@@ -210,13 +210,6 @@ export function kingLogic(item, pieces) {
       }
     }
   }
-  illegalMoves = [...new Set(illegalMoves)];
-  possibleSquares = possibleSquares.filter(
-    (square) => !illegalMoves.includes(square) && isValidNotation(square)
-  );
-  freePieces = freePieces.filter(
-    (square) => !illegalMoves.includes(square) && isValidNotation(square)
-  );
 
   return { possibleSquares, freePieces };
 }

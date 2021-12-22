@@ -220,6 +220,9 @@ export const kingMoves = (position) => {
 export const getEnemyKing = (pieces, color) => {
   return pieces.find((p) => p.type === "k" && p.color !== color);
 };
+export const getKing = (pieces, color) => {
+  return pieces.find((p) => p.type === "k" && p.color === color);
+};
 export const isCheck = (pieces, allPieces, enemyKing) => {
   var attackingPieces = [];
 
