@@ -1,4 +1,3 @@
-import { isValidNotation } from "./../helpers/helpers";
 import {
   getXandYaxis,
   getPieceFromPosition,
@@ -7,6 +6,7 @@ import {
   getPossibleCrossAxises,
   getPossibleXandYaxises,
   kingMoves,
+  canCastle,
 } from "../helpers/helpers";
 
 export const calculateMove = (item, pieces) => {
@@ -35,12 +35,8 @@ export function pawnLogic(item, pieces) {
   const { positionX, positionY } = getXandYaxis(position);
   const crossLeft = getPreviousLetter(positionX);
   const crossRight = getNextLetter(positionX);
-  var isCheck = false;
-  const protecteds = [];
   //pawn is black
   if (color === "b") {
-    protecteds.push(`${crossLeft}${positionY - 1}`);
-    protecteds.push(`${crossRight}${positionY - 1}`);
     //there is no piece in front of pawn
     if (!getPieceFromPosition(pieces, `${positionX}${positionY - 1}`)) {
       possibleSquares.push(`${positionX}${positionY - 1}`);
@@ -110,22 +106,18 @@ export function pawnLogic(item, pieces) {
     }
   }
 
-  return { possibleSquares, freePieces, protecteds };
+  return { possibleSquares, freePieces };
 }
 export function rookLogic(item, pieces) {
-  const { possibleSquares, freePieces, protecteds } = getPossibleXandYaxises(
-    item,
-    pieces
-  );
+  const { possibleSquares, freePieces } = getPossibleXandYaxises(item, pieces);
 
-  return { possibleSquares, freePieces, protecteds };
+  return { possibleSquares, freePieces };
 }
 export function knightLogic(item, pieces) {
   const { position, color } = item;
   const freePieces = [];
   const possibleSquares = [];
   const { positionX, positionY } = getXandYaxis(position);
-  const protecteds = [];
   var possibilities = [
     `${getNextLetter(positionX)}${positionY - 2}`,
     `${getPreviousLetter(positionX)}${positionY - 2}`,
@@ -141,15 +133,13 @@ export function knightLogic(item, pieces) {
     if (piece) {
       if (piece.color !== color) {
         freePieces.push(possibilities[i]);
-      } else {
-        protecteds.push(possibilities[i]);
       }
     } else {
       possibleSquares.push(possibilities[i]);
     }
   }
 
-  return { possibleSquares, freePieces, protecteds };
+  return { possibleSquares, freePieces };
 }
 export function bishopLogic(item, pieces) {
   const { possibleSquares, freePieces } = getPossibleCrossAxises(item, pieces);
@@ -160,7 +150,6 @@ export function kingLogic(item, pieces) {
   const { position, color } = item;
   var possibleSquares = [];
   var freePieces = [];
-
   const possibilities = kingMoves(position);
 
   for (var i in possibilities) {

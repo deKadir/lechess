@@ -261,6 +261,87 @@ export const calculateAllMoves = (pieceSet, pieces) => {
     freePieces.push(...free);
     possibleSquares.push(...possible);
   }
-
+  freePieces = freePieces.filter((p) => isValidNotation(p));
+  possibleSquares = possibleSquares.filter((p) => isValidNotation(p));
   return { freePieces, possibleSquares };
+};
+export const validateMove = (piece, pieces, position, castling) => {
+  var piecesCopy = JSON.parse(JSON.stringify(pieces));
+
+  const { possibleSquares, freePieces } = calculateMove(piece, pieces);
+  if (piece.type === "k") {
+    possibleSquares.push(...canCastle(piece, pieces));
+  }
+  if (possibleSquares.includes(position)) {
+    piecesCopy = piecesCopy.map((p) => {
+      if (p.position === piece.position) {
+        p.position = position;
+        return p;
+      } else {
+        return p;
+      }
+    });
+  }
+
+  if (freePieces.includes(position)) {
+    piecesCopy = piecesCopy.filter((p) => p.position !== position);
+    piecesCopy = piecesCopy.map((p) => {
+      if (p.position === piece.position) {
+        p.position = position;
+      }
+      return p;
+    });
+  }
+  var enemyPieces = piecesCopy.filter((p) => p.color !== piece.color);
+  var myKing = getKing(piecesCopy, piece.color);
+  const { attackingPieces } = isCheck(enemyPieces, piecesCopy, myKing);
+
+  return { attackingPieces, possibleSquares, freePieces, piecesCopy };
+};
+
+export const canCastle = (king, pieces) => {
+  const { positionX, positionY } = getXandYaxis(king.position);
+  var castleLong = `${getPreviousLetter(
+    getPreviousLetter(positionX)
+  )}${positionY}`;
+  var castleSort = `${getNextLetter(getNextLetter(positionX))}${positionY}`;
+  const possibleSqaures = [];
+  var possibleX = "a";
+  var anyPiece = false;
+
+  while (true) {
+    possibleX = getNextLetter(possibleX);
+    if (possibleX === positionX) {
+      break;
+    }
+    var piece = getPieceFromPosition(pieces, `${possibleX}${positionY}`);
+
+    if (piece) {
+      anyPiece = true;
+      break;
+    }
+  }
+
+  if (!anyPiece) {
+    possibleSqaures.push(castleLong);
+  }
+  anyPiece = false;
+  possibleX = positionX;
+  while (true) {
+    possibleX = getNextLetter(possibleX);
+    if (possibleX === "h") {
+      break;
+    }
+
+    var piece = getPieceFromPosition(pieces, `${possibleX}${positionY}`);
+    if (piece) {
+      anyPiece = true;
+      break;
+    }
+  }
+  if (!anyPiece) {
+    possibleSqaures.push(castleSort);
+  }
+
+  return possibleSqaures;
 };

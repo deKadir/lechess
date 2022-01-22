@@ -1,6 +1,6 @@
 import style from "./piece.module.scss";
 import { useDrag } from "react-dnd";
-export default function Tile({ piece, position, color }) {
+export default function Tile({ piece, position, color, check }) {
   let img;
 
   if (piece && color) {
@@ -25,7 +25,7 @@ export default function Tile({ piece, position, color }) {
       ref={drag}
       key={position}
       src={img}
-      style={{ opacity: isDragging ? 0.2 : 1 }}
+      style={{ opacity: isDragging ? 0.2 : 1, background: check ? "red" : "" }}
     />
   );
 }

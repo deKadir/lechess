@@ -1,4 +1,5 @@
 import { RESET_BOARD, MOVE_PIECE } from "../types";
+
 const initial_pieces = [
   {
     type: "r",
