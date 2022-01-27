@@ -24,6 +24,7 @@ export default function Square({
   const { pieces } = useSelector((state) => state);
   const dispatch = useDispatch();
   const [color, setColor] = useState("transparent");
+  console.log("");
   const move = (item) => {
     var piece = item.id;
     const { attackingPieces, piecesCopy } = validateMove(
